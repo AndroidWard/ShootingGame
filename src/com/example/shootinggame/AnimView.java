@@ -1,6 +1,5 @@
 package com.example.shootinggame;
 
-
 import java.io.InputStream;
 import java.util.Random;
 
@@ -12,13 +11,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.util.AttributeSet;
 import android.view.SurfaceView;
 
 public class AnimView extends SurfaceView implements Callback, Runnable {
-	// 屏幕的宽高 
+	// 屏幕的宽高
 	private int ScreenWidth = 0;
 	private int ScreenHeight = 0;
 	private int BgHeight = 0;
@@ -29,11 +29,11 @@ public class AnimView extends SurfaceView implements Callback, Runnable {
 	private int BACKGROUND_POS_Y0 = 0;
 	private int BACKGROUND_POS_Y1 = 0;
 	static final int PLAN_ANIM_COUNT = 6;
-//	static final int BULLET_ANIM_COUNT = 4;
+	// static final int BULLET_ANIM_COUNT = 4;
 	static final int BULLET_ANIM_COUNT = 6;//
 	static final int BULLET_POOL_COUNT = 15;
-	//static final int PLAN_STEP = 10;
-	static  int PLAN_STEP = 30;
+	// static final int PLAN_STEP = 10;
+	static int PLAN_STEP = 30;
 	static final int PLAN_INTERVAL = 500;
 	static final int BULLET_UP_OFFSET = 40;
 	static final int BULLET_LEFT_OFFSET = 5;
@@ -56,8 +56,8 @@ public class AnimView extends SurfaceView implements Callback, Runnable {
 	private int TOUCH_POS_X = 0;
 	private int TOUCH_POS_Y = 0;
 	private int sendID = 0;
-	private Bitmap[] bitBullet=null;
-    
+	private Bitmap[] bitBullet = null;
+
 	public AnimView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
@@ -83,7 +83,8 @@ public class AnimView extends SurfaceView implements Callback, Runnable {
 		surfaceHolder.addCallback(this);
 		setFocusable(true);
 		init();
-		
+     
+        
 		setGameState(STATE_GAME);
 
 		// TODO Auto-generated constructor stub
@@ -97,7 +98,9 @@ public class AnimView extends SurfaceView implements Callback, Runnable {
 	private void init() {
 		// TODO Auto-generated method stub
 		BACKGROUND = ReadBitmap(context, R.drawable.map);
-		PLAN_ANIME = new Anim(context, new int[] {R.drawable.plan_0,R.drawable.plan_1,R.drawable.plan_2,R.drawable.plan_3,R.drawable.plan_4,R.drawable.plan_5}, true);
+		PLAN_ANIME = new Anim(context, new int[] { R.drawable.plan_0,
+				R.drawable.plan_1, R.drawable.plan_2, R.drawable.plan_3,
+				R.drawable.plan_4, R.drawable.plan_5 }, true);
 		BACKGROUND_POS_Y0 = 0;
 		BACKGROUND_POS_Y1 = -BACKGROUND.getHeight();
 		BgHeight = BACKGROUND.getHeight();
@@ -106,29 +109,27 @@ public class AnimView extends SurfaceView implements Callback, Runnable {
 		PLAN_POS_Y = 400;
 		Bitmap[] ENEMY_MOVE = new Bitmap[ENEMY_ALIVE_COUNT];
 		ENEMY_MOVE[0] = ReadBitmap(context, R.drawable.enemy);
-		
+
 		Bitmap[] ENEMY_DEAD = new Bitmap[ENEMY_DEATH_COUNT];
 		for (int i = 0; i < ENEMY_DEATH_COUNT; i++) {
-           ENEMY_DEAD[i]=ReadBitmap(context, R.drawable.bomb_enemy_0+i);
+			ENEMY_DEAD[i] = ReadBitmap(context, R.drawable.bomb_enemy_0 + i);
 		}
 		enemy = new Enemy[ENEMY_POOL_COUNT];
 		for (int i = 0; i < ENEMY_POOL_COUNT; i++) {
-                 enemy[i]=new Enemy(context, ENEMY_MOVE, ENEMY_DEAD);
-                 enemy[i].init(i*ENEMY_POS_OFF, 0);
+			enemy[i] = new Enemy(context, ENEMY_MOVE, ENEMY_DEAD);
+			enemy[i].init(i * ENEMY_POS_OFF, 0);
 		}
 		bullet = new Bullet[BULLET_POOL_COUNT];
-		bitBullet=new Bitmap[BULLET_ANIM_COUNT];
+		bitBullet = new Bitmap[BULLET_ANIM_COUNT];
 		for (int i = 0; i < BULLET_ANIM_COUNT; i++) {
-          bitBullet[i]=ReadBitmap(context, R.drawable.bullet);
+			bitBullet[i] = ReadBitmap(context, R.drawable.bullet);
 		}
 		for (int i = 0; i < BULLET_POOL_COUNT; i++) {
-			bullet[i]=new Bullet(context, bitBullet);
+			bullet[i] = new Bullet(context, bitBullet);
 		}
-		
+
 		sendTime = System.currentTimeMillis();
 	}
-
-	
 
 	/**
 	 * 读取图片资源
@@ -155,8 +156,8 @@ public class AnimView extends SurfaceView implements Callback, Runnable {
 				surfaceHolder.unlockCanvasAndPost(canvas);
 			}
 			try {
-				//Thread.sleep(100);
-				  Thread.sleep(20);
+				// Thread.sleep(100);
+				Thread.sleep(20);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -176,10 +177,10 @@ public class AnimView extends SurfaceView implements Callback, Runnable {
 
 	private void updateBg() {
 		// TODO Auto-generated method stub
-	//	BACKGROUND_POS_Y0 += 10;
-		//BACKGROUND_POS_Y1 += 10;
+		// BACKGROUND_POS_Y0 += 10;
+		// BACKGROUND_POS_Y1 += 10;
 		BACKGROUND_POS_Y0 += 2;
-			BACKGROUND_POS_Y1 += 2;
+		BACKGROUND_POS_Y1 += 2;
 		if (BACKGROUND_POS_Y0 == BgHeight) {
 			BACKGROUND_POS_Y0 = -BgHeight;
 		}
@@ -204,32 +205,31 @@ public class AnimView extends SurfaceView implements Callback, Runnable {
 				PLAN_POS_Y = TOUCH_POS_Y;
 			}
 		}
-			for (int i = 0; i < BULLET_POOL_COUNT; i++) {
-				bullet[i].UpdateBullet();
+		for (int i = 0; i < BULLET_POOL_COUNT; i++) {
+			bullet[i].UpdateBullet();
+		}
+		for (int i = 0; i < ENEMY_POOL_COUNT; i++) {
+			enemy[i].updateEnemy();
+			if (enemy[i].ENEMY_STATE = Enemy.ENEMY_STATE_DEAD
+					|| enemy[i].ENEMY_POS_Y >= ScreenHeight) {
+				enemy[i].init(UtilRandom(0, ENEMY_POOL_COUNT) * ENEMY_POS_OFF,
+						0);
 			}
-			for (int i = 0; i < ENEMY_POOL_COUNT; i++) {
-				enemy[i].updateEnemy();
-				if (enemy[i].ENEMY_STATE = Enemy.ENEMY_STATE_DEAD
-						|| enemy[i].ENEMY_POS_Y >= ScreenHeight) {
-					enemy[i].init(UtilRandom(0, ENEMY_POOL_COUNT)
-							* ENEMY_POS_OFF, 0);
-				}
+		}
+		if (sendID < BULLET_POOL_COUNT) {
+			long now = System.currentTimeMillis();
+			if (now - sendTime >= PLAN_INTERVAL) {
+				bullet[sendID].init(PLAN_POS_X - BULLET_LEFT_OFFSET, PLAN_POS_Y
+						- BULLET_UP_OFFSET);
+				sendTime = now;
+				sendID++;
+			} else {
+				sendID = 0;
 			}
-			if (sendID < BULLET_POOL_COUNT) {
-				long now = System.currentTimeMillis();
-				if (now - sendTime >= PLAN_INTERVAL) {
-					bullet[sendID].init(PLAN_POS_X - BULLET_LEFT_OFFSET,
-							PLAN_POS_Y - BULLET_UP_OFFSET);
-					sendTime = now;
-					sendID++;
-				} else {
-					sendID = 0;
-				}
-				Collision();
+			Collision();
 
-			}
+		}
 
-		
 	}
 
 	private void Collision() {
@@ -237,10 +237,10 @@ public class AnimView extends SurfaceView implements Callback, Runnable {
 		for (int i = 0; i < BULLET_POOL_COUNT; i++) {
 			for (int j = 0; j < ENEMY_POOL_COUNT; j++) {
 				if (enemy[j].ENEMY_POS_X <= bullet[i].BULLET_X
-						&& (bullet[i].BULLET_X <= enemy[j].ENEMY_POS_X + 20)
+						&& (bullet[i].BULLET_X <= enemy[j].ENEMY_POS_X + 55)
 						&& enemy[j].ENEMY_POS_Y <= bullet[i].BULLET_Y
-						&& ((bullet[i].BULLET_Y <= enemy[j].ENEMY_POS_Y + 20))) {
-                 enemy[j].ANIMATION_STATE=Enemy.ENEMY_STATE_DEAD;
+						&& ((bullet[i].BULLET_Y <= enemy[j].ENEMY_POS_Y + 55))) {
+					enemy[j].ANIMATION_STATE = Enemy.ENEMY_STATE_DEAD;
 				}
 			}
 		}
